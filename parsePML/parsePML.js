@@ -47,9 +47,9 @@ const convertToPlasmaUI = attrs => {
   const styled = { ...defaults };
 
   if (style)
-    Object.entries(style).forEach(([type, attr]) => {
-      styled[type] = { ...styled[type], ...attr };
-    });
+    Object.entries(style).forEach(
+      ([type, attr]) => (styled[type] = { ...styled[type], ...attr })
+    );
 
   return { ...defaults[type], ...attrs };
 };
