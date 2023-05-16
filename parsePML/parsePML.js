@@ -27,7 +27,8 @@ const preprocessPML = text =>
     .replace(/<!--.*?-->/gs, "");
 
 const convertToPlasmaUI = (attrs, style) => {
-  if (!attrs.type) return console.log("unreognized type");
+  if (!attrs.type)
+    return console.error(`Unrecognized type error: '${attrs.type}'`);
   const type = attrs.type;
 
   Object.entries(attrs).forEach(([key, value]) => {
