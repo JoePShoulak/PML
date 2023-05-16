@@ -31,7 +31,9 @@ const convertToPlasmaUI = (attrs, style) => {
   const type = attrs.type;
 
   Object.entries(attrs).forEach(([key, value]) => {
-    if (Object.keys(numMap).includes(key)) {
+    if (key === "text" && value === "") {
+      attrs.text = defaults[type].text;
+    } else if (Object.keys(numMap).includes(key)) {
       attrs[key] = numMap[key][value];
     } else if (value[0] === "#") {
       parseColor(value).forEach((clr, i) => (attrs[key + rgb[i]] = clr));
@@ -42,7 +44,6 @@ const convertToPlasmaUI = (attrs, style) => {
     }
   });
 
-  if (!attrs.text) attrs.text = defaults.text.text;
   // FIXME: convert style so plasmaUI to match shape of defaults
   const styled = { ...defaults };
 
