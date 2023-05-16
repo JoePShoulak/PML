@@ -89,7 +89,7 @@ const parsePML = pml => {
   const plasmaUI = [];
   while ((tagMatch = regex.generalTag.exec(pml))) {
     const attrs = getAttributes(tagMatch);
-    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs, style));
+    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs /*, style*/)); // commented out until styling is fixed
   }
 
   return plasmaUI;

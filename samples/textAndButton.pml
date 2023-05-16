@@ -1,4 +1,3 @@
-<!-- eslint-disable -->
 <text
   id="11"
   x="22"
@@ -30,9 +29,11 @@
 <style>
    {
     "text": {
-      "x":32 ;
+      "x": 32
     }
   }
 </style>
+
+<button></button>
 
 <text>adipisicing elit.</text>
