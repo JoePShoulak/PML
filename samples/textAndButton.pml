@@ -29,7 +29,8 @@
 <style>
    {
     "text": {
-      "x": 32
+      "x": 32,
+      "color": "#aabbcc"
     }
   }
 </style>

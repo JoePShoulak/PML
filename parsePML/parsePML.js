@@ -20,15 +20,14 @@ const numMap = {
   },
 };
 
-const preprocessPML = text =>
-  text
-    .replace(/\s+/g, " ")
-    .replace(/ >/g, ">")
-    .replace(/<!--.*?-->/gs, "");
+const preprocessPML = pml =>
+  pml
+    .replace(/\s+/g, " ") // Collapse consecutive whitespace to just spaces
+    .replace(/ >/g, ">") // Remove remaining whitespace around tags
+    .replace(/<!--.*?-->/gs, ""); // Remove HTML-style commends from the code
 
 const convertToPlasmaUI = (attrs, style) => {
-  if (!attrs.type)
-    return console.error(`Unrecognized type error: '${attrs.type}'`);
+  if (!attrs.type) return console.error(`Missing type error`);
   const type = attrs.type;
 
   Object.entries(attrs).forEach(([key, value]) => {
@@ -45,7 +44,6 @@ const convertToPlasmaUI = (attrs, style) => {
     }
   });
 
-  // FIXME: convert style so plasmaUI to match shape of defaults
   const styled = { ...defaults };
 
   if (style)
@@ -65,9 +63,7 @@ const splitTags = tagString =>
 const getAttributes = tagMatch => {
   const [openTag, closeTag] = [tagMatch[1], tagMatch[4]];
   if (openTag !== closeTag)
-    return console.error(
-      `Mismatching tag error: '${openTag}' != '${closeTag}'`
-    );
+    return console.error(`Tag mismatch error: '${openTag}' != '${closeTag}'`);
   if (!types.includes(openTag))
     return console.error(`Unknown tag error: '${openTag}'`);
 
@@ -84,15 +80,18 @@ const getAttributes = tagMatch => {
 const parsePML = pml => {
   pml = preprocessPML(pml);
 
-  const styleMatch = regex.styleTag.exec(pml)[1];
-  const style = styleMatch ? JSON.parse(styleMatch) : undefined;
+  const style = JSON.parse(regex.styleTag.exec(pml)[1]);
+  Object.entries(style).forEach(
+    ([k, v]) => (style[k] = convertToPlasmaUI({ ...v, type: k }))
+  );
+
   pml = pml.replace(regex.styleTag, "");
 
   let tagMatch;
   const plasmaUI = [];
   while ((tagMatch = regex.generalTag.exec(pml))) {
     const attrs = getAttributes(tagMatch);
-    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs /*, style*/)); // commented out until styling is fixed
+    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs, style)); // commented out until styling is fixed
   }
 
   return plasmaUI;
