@@ -42,6 +42,7 @@ const convertToPlasmaUI = (attrs, style) => {
     }
   });
 
+  if (!attrs.text) attrs.text = defaults.text.text;
   // FIXME: convert style so plasmaUI to match shape of defaults
   const styled = { ...defaults };
 
