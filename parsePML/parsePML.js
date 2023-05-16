@@ -27,7 +27,7 @@ const preprocessPML = text =>
     .replace(/ >/g, ">")
     .replace(/<!--.*?-->/gs, "");
 
-const convertToPlasmaUI = attrs => {
+const convertToPlasmaUI = (attrs, style) => {
   if (!attrs.type) return console.log("unreognized type");
   const type = attrs.type;
 
@@ -43,7 +43,7 @@ const convertToPlasmaUI = attrs => {
     }
   });
 
-  const style = { text: { x: 2, y: 3 } };
+  // FIXME: convert style so plasmaUI to match shape of defaults
   const styled = { ...defaults };
 
   if (style)
@@ -51,7 +51,7 @@ const convertToPlasmaUI = attrs => {
       ([type, attr]) => (styled[type] = { ...styled[type], ...attr })
     );
 
-  return { ...defaults[type], ...attrs };
+  return { ...styled[type], ...attrs };
 };
 
 const splitTags = tagString =>
@@ -82,14 +82,15 @@ const getAttributes = tagMatch => {
 const parsePML = pml => {
   pml = preprocessPML(pml);
 
-  const style = JSON.parse(regex.styleTag.exec(pml)[1]);
+  const styleMatch = regex.styleTag.exec(pml)[1];
+  const style = styleMatch ? JSON.parse(styleMatch) : undefined;
   pml = pml.replace(regex.styleTag, "");
 
   let tagMatch;
   const plasmaUI = [];
   while ((tagMatch = regex.generalTag.exec(pml))) {
     const attrs = getAttributes(tagMatch);
-    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs));
+    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs, style));
   }
 
   return plasmaUI;
