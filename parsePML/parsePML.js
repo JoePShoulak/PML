@@ -2,6 +2,7 @@ const { parseColor, regex } = require("./helper");
 const defaults = require("./defaults.json");
 const types = Object.keys(defaults);
 
+const rgb = ["R", "G", "B"];
 const numMap = {
   horizontalAlignment: {
     left: 0,
@@ -18,8 +19,6 @@ const numMap = {
     button: 2,
   },
 };
-
-const rgb = ["R", "G", "B"];
 
 const preprocessPML = text =>
   text
