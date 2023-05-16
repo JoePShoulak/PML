@@ -1,4 +1,6 @@
-const { stripWhitespace } = require("./helpers/help");
+const { parseColor, regex } = require("./helper");
+const defaults = require("./defaults.json");
+const types = Object.keys(defaults);
 
 const numMap = {
   horizontalAlignment: {
@@ -19,15 +21,16 @@ const numMap = {
 
 const rgb = ["R", "G", "B"];
 
-const hexToArray = hex => [
-  hex.substring(1, 3),
-  hex.substring(3, 5),
-  hex.substring(5, 7),
-];
-
-const parseColor = clr => hexToArray(clr).map(hex => parseInt(hex, 16) / 255);
+const preprocessPML = text =>
+  text
+    .replace(/\s+/g, " ")
+    .replace(/ >/g, ">")
+    .replace(/<!--.*?-->/gs, "");
 
 const convertToPlasmaUI = attrs => {
+  if (!attrs.type) return console.log("unreognized type");
+  const type = attrs.type;
+
   Object.entries(attrs).forEach(([key, value]) => {
     if (Object.keys(numMap).includes(key)) {
       attrs[key] = numMap[key][value];
@@ -40,7 +43,15 @@ const convertToPlasmaUI = attrs => {
     }
   });
 
-  return attrs;
+  const style = { text: { x: 2, y: 3 } };
+  const styled = { ...defaults };
+
+  if (style)
+    Object.entries(style).forEach(([type, attr]) => {
+      styled[type] = { ...styled[type], ...attr };
+    });
+
+  return { ...defaults[type], ...attrs };
 };
 
 const splitTags = tagString =>
@@ -51,7 +62,12 @@ const splitTags = tagString =>
 
 const getAttributes = tagMatch => {
   const [openTag, closeTag] = [tagMatch[1], tagMatch[4]];
-  if (openTag !== closeTag) return console.error("Mismatching tag error");
+  if (openTag !== closeTag)
+    return console.error(
+      `Mismatching tag error: '${openTag}' != '${closeTag}'`
+    );
+  if (!types.includes(openTag))
+    return console.error(`Unknown tag error: '${openTag}'`);
 
   const attrObj = { type: openTag, text: tagMatch[3].trim() };
 
@@ -64,12 +80,17 @@ const getAttributes = tagMatch => {
 };
 
 const parsePML = pml => {
-  const pattern = /<(\w+)((?:\s+\w+="[^"]*")*)>(.*?)<\/(\w+)>/g;
+  pml = preprocessPML(pml);
+
+  const style = JSON.parse(regex.styleTag.exec(pml)[1]);
+  pml = pml.replace(regex.styleTag, "");
 
   let tagMatch;
   const plasmaUI = [];
-  while ((tagMatch = pattern.exec(stripWhitespace(pml))))
-    plasmaUI.push(convertToPlasmaUI(getAttributes(tagMatch)));
+  while ((tagMatch = regex.generalTag.exec(pml))) {
+    const attrs = getAttributes(tagMatch);
+    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs));
+  }
 
   return plasmaUI;
 };

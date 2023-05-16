@@ -26,4 +26,12 @@
   sit amet consectetur
 </button>
 
+<style>
+   {
+    "text": {
+      "x": 32
+    }
+  }
+</style>
+
 <text>adipisicing elit.</text>

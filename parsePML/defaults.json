@@ -1,0 +1,36 @@
+{
+  "text": {
+    "text": "Hello world!",
+    "fontSize": 84,
+    "horizontalAlignment": 1,
+    "verticalAlignment": 1,
+    "type": 1,
+    "id": 0,
+    "x": 0,
+    "y": 0,
+    "width": 680,
+    "height": 512,
+    "colorR": 1.0,
+    "colorG": 1.0,
+    "colorB": 1.0
+  },
+  "button": {
+    "text": "Button",
+    "fontSize": 60,
+    "backgroundColorR": 0.0509803928,
+    "backgroundColorG": 0.5176471,
+    "backgroundColorB": 0.721568644,
+    "highlightColorR": 0.0,
+    "highlightColorG": 0.807843149,
+    "highlightColorB": 1.0,
+    "type": 2,
+    "id": 0,
+    "x": 170,
+    "y": 128,
+    "width": 340,
+    "height": 256,
+    "colorR": 1.0,
+    "colorG": 1.0,
+    "colorB": 1.0
+  }
+}
