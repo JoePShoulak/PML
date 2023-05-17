@@ -22,14 +22,14 @@
   highlightColor="#888888"
   fontSize="99"
   horizontalAlignment="center"
-  verticalAlignment="center">
+  verticalAlignment="Center">
   sit amet consectetur
 </button>
 
 <style>
    {
     "text": {
-      "x": 32,
+      "x": "6",
       "color": "#aabbcc"
     }
   }
@@ -37,4 +37,8 @@
 
 <button></button>
 
-<text>adipisicing elit.</text>
+<!--
+  <button></button>
+-->
+
+<text y="20">adipisicing elit.</text>

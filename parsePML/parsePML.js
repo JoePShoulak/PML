@@ -26,11 +26,13 @@ const preprocessPML = pml =>
     .replace(/ >/g, ">") // Remove remaining whitespace around tags
     .replace(/<!--.*?-->/gs, ""); // Remove HTML-style commends from the code
 
-const convertToPlasmaUI = (attrs, style) => {
+const convertToPlasmaUI = (attrs, sheet) => {
   if (!attrs.type) return console.error(`Missing type error`);
   const type = attrs.type;
 
   Object.entries(attrs).forEach(([key, value]) => {
+    value = value.toLowerCase();
+
     if (key === "text" && value === "") {
       attrs.text = defaults[type].text;
     } else if (Object.keys(numMap).includes(key)) {
@@ -44,14 +46,7 @@ const convertToPlasmaUI = (attrs, style) => {
     }
   });
 
-  const styled = { ...defaults };
-
-  if (style)
-    Object.entries(style).forEach(
-      ([type, attr]) => (styled[type] = { ...styled[type], ...attr })
-    );
-
-  return { ...styled[type], ...attrs };
+  return { ...(sheet ? sheet : defaults)[type], ...attrs };
 };
 
 const splitTags = tagString =>
@@ -86,12 +81,18 @@ const parsePML = pml => {
   );
 
   pml = pml.replace(regex.styleTag, "");
+  const sheet = { ...defaults };
+
+  if (style)
+    Object.entries(style).forEach(
+      ([type, attr]) => (sheet[type] = { ...sheet[type], ...attr })
+    );
 
   let tagMatch;
   const plasmaUI = [];
   while ((tagMatch = regex.generalTag.exec(pml))) {
     const attrs = getAttributes(tagMatch);
-    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs, style)); // commented out until styling is fixed
+    if (attrs) plasmaUI.push(convertToPlasmaUI(attrs, sheet)); // commented out until styling is fixed
   }
 
   return plasmaUI;
